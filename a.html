@@ -3,47 +3,63 @@
 
     <head>
         <script language="JavaScript">
-            function chain(times, fn, init){
+            function log(object){
                 var newDiv = document.createElement("div");
-                newDiv.innerText = init;
+                newDiv.innerText = object.x1 + ", " +
+                                   object.y1 + ", " +
+                                   object.x2 + ", " +
+                                   object.y2 + ", " +
+                                   object.xOrY + ", " +
+                                   object.colours;
                 document.body.appendChild(newDiv);
-                //window.alert("Iterating!");
+            }
+
+            function chain(times, fn, object){
+                log(object);
+
                 if(times > 0){
-                    chain(times - 1, fn, fn.call(null, init));
+                    chain(times - 1, fn, fn.call(null, object));
                 }
             }
 
             function onLoad(){
-                chain(20, draw, [20, 20, "x", ["#FF0000", "#00FF00", "#0000FF", "#FFF0F0"]]);
+                chain(20, draw, {x1: 20,
+                                 y1: 20,
+                                 x2: 0,
+                                 y2: 0,
+                                 xOrY: "x",
+                                 colours: ["#FF0000", "#00FF00", "#0000FF", "#FFF0F0"]});
             }
 
-            function draw(args){
-                var x1 = args[0];
-                var y1 = args[1];
-                var xOrY = args[2];
-                var colours = args[3];
-                var colour = colours[0];
-                colours.push(colours.shift()); // rotate the colours
-                var x2 = x1;
-                var y2 = y1;
+            function draw(object){
+                return drawObject(change(object));
+            }
 
-                if(xOrY == "x"){
-                    x2 = x1 + 20;
-                    xOrY = "y";
+            function change(object){
+                object.colours.push(object.colours.shift()); // rotate the colours
+                object.x1 = object.x2;
+                object.y1 = object.y2;
+
+                if(object.xOrY == "x"){
+                    object.x2 = object.x1 + 20;
+                    object.xOrY = "y";
                 }else{
-                    y2 = y1 + 20;
-                    xOrY = "x";
+                    object.y2 = object.y1 + 20;
+                    object.xOrY = "x";
                 }
+                return object;
+            }
 
+            function drawObject(obj){
                 var canvas1 = document.getElementById("canvas1");
                 var context1 = canvas1.getContext("2d");
                 context1.beginPath();
-                context1.strokeStyle = colour;
-                context1.moveTo(x1, y1);
-                context1.lineTo(x2, y2);
+                context1.strokeStyle = obj.colours[0];
+                context1.moveTo(obj.x1, obj.y1);
+                context1.lineTo(obj.x2, obj.y2);
                 context1.stroke();
                 context1.closePath();
-                return [x2, y2, xOrY, colours];
+                return obj;
             }
         </script>
     </head>
