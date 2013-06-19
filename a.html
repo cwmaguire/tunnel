@@ -18,7 +18,7 @@
                 log(object);
 
                 if(times > 0){
-                    chain(times - 1, fn, fn.call(null, object));
+                    window.setTimeout(function(){chain(times - 1, fn, fn.call(null, object))}, 100);
                 }
             }
 
@@ -53,6 +53,9 @@
             function drawObject(obj){
                 var canvas1 = document.getElementById("canvas1");
                 var context1 = canvas1.getContext("2d");
+                context1.fillStyle = "#FFFFFF";
+                context1.fillRect(0, 0, 400, 400);
+                context1.fill();
                 context1.beginPath();
                 context1.strokeStyle = obj.colours[0];
                 context1.moveTo(obj.x1, obj.y1);
