@@ -3,19 +3,19 @@
 
     <head>
         <script language="JavaScript">
-            function log(object){
+            function logFrame(frame){
                 var newDiv = document.createElement("div");
-                newDiv.innerText = object.x1 + ", " +
-                                   object.y1 + ", " +
-                                   object.x2 + ", " +
-                                   object.y2 + ", " +
-                                   object.xOrY + ", " +
-                                   object.colours;
+                newDiv.innerText = frame.x1 + ", " +
+                                   frame.y1 + ", " +
+                                   frame.x2 + ", " +
+                                   frame.y2 + ", " +
+                                   frame.xOrY + ", " +
+                                   frame.colours;
                 document.body.appendChild(newDiv);
             }
 
             function chain(times, fn, object){
-                log(object);
+                logFrame(object);
 
                 if(times > 0){
                     window.setTimeout(function(){chain(times - 1, fn, fn.call(null, object))}, 100);
@@ -31,38 +31,38 @@
                                  colours: ["#FF0000", "#00FF00", "#0000FF", "#FFF0F0"]});
             }
 
-            function draw(object){
-                return drawObject(change(object));
+            function draw(frame){
+                return drawFrame(nextFrame(frame));
             }
 
-            function change(object){
-                object.colours.push(object.colours.shift()); // rotate the colours
-                object.x1 = object.x2;
-                object.y1 = object.y2;
+            function nextFrame(frame){
+                frame.colours.push(frame.colours.shift()); // rotate the colours
+                frame.x1 = frame.x2;
+                frame.y1 = frame.y2;
 
-                if(object.xOrY == "x"){
-                    object.x2 = object.x1 + 20;
-                    object.xOrY = "y";
+                if(frame.xOrY == "x"){
+                    frame.x2 = frame.x1 + 20;
+                    frame.xOrY = "y";
                 }else{
-                    object.y2 = object.y1 + 20;
-                    object.xOrY = "x";
+                    frame.y2 = frame.y1 + 20;
+                    frame.xOrY = "x";
                 }
-                return object;
+                return frame;
             }
 
-            function drawObject(obj){
+            function drawFrame(frame){
                 var canvas1 = document.getElementById("canvas1");
                 var context1 = canvas1.getContext("2d");
                 context1.fillStyle = "#FFFFFF";
                 context1.fillRect(0, 0, 400, 400);
                 context1.fill();
                 context1.beginPath();
-                context1.strokeStyle = obj.colours[0];
-                context1.moveTo(obj.x1, obj.y1);
-                context1.lineTo(obj.x2, obj.y2);
+                context1.strokeStyle = frame.colours[0];
+                context1.moveTo(frame.x1, frame.y1);
+                context1.lineTo(frame.x2, frame.y2);
                 context1.stroke();
                 context1.closePath();
-                return obj;
+                return frame;
             }
         </script>
     </head>
