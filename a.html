@@ -24,13 +24,15 @@
             }
 
             function onLoad(){
-                chain(20, draw, {x1: 20,
+                chain(40, draw, {x1: 20,
                                  y1: 20,
                                  x2: 0,
                                  y2: 0,
                                  xOrY: "x",
                                  foregroundColours: ["#FF0000", "#00FF00", "#0000FF", "#FFF0F0"],
-                                 backgroundColours: ["#00FF00", "#0000FF", "#FF0000", "#FFF0F0"]});
+                                 backgroundColours: ["#879090", "#879090", "#909090", "#909090", "#879090", "#879090", "#909090", "#909090"],
+                                 rectangleMargins: [10, 90],
+                                 rectangleMarginDelta: 10});
             }
 
             function draw(frame){
@@ -43,6 +45,9 @@
                 frame.x1 = frame.x2;
                 frame.y1 = frame.y2;
 
+                frame.rectangleMargins[0] = (frame.rectangleMargins[0] + frame.rectangleMarginDelta) % 190
+                frame.rectangleMargins[1] = (frame.rectangleMargins[1] + frame.rectangleMarginDelta) % 190
+
                 if(frame.xOrY == "x"){
                     frame.x2 = frame.x1 + 20;
                     frame.xOrY = "y";
@@ -54,15 +59,31 @@
             }
 
             function drawFrame(frame){
+                var rect1Margin = frame.rectangleMargins[0];
+                var rect2Margin = frame.rectangleMargins[1];
+
                 var canvas1 = document.getElementById("canvas1");
                 var context1 = canvas1.getContext("2d");
                 context1.fillStyle = frame.backgroundColours[0];
                 context1.fillRect(0, 0, 400, 400);
                 context1.fill();
-                context1.beginPath();
+
                 context1.strokeStyle = frame.foregroundColours[0];
-                context1.moveTo(frame.x1, frame.y1);
-                context1.lineTo(frame.x2, frame.y2);
+
+                context1.strokeRect(200 - rect1Margin,
+                                    200 - rect1Margin,
+                                    2 * rect1Margin,
+                                    2 * rect1Margin);
+                context1.strokeRect(200 - rect2Margin,
+                                    200 - rect2Margin,
+                                    2 * rect2Margin,
+                                    2 * rect2Margin);
+
+                context1.beginPath();
+                context1.moveTo(200 - rect1Margin, 200 - rect1Margin);
+                context1.lineTo(200 - rect2Margin, 200 - rect2Margin);
+                context1.moveTo(200 - rect1Margin, 200 + rect1Margin);
+                context1.lineTo(200 - rect2Margin, 200 + rect2Margin);
                 context1.stroke();
                 context1.closePath();
                 return frame;
