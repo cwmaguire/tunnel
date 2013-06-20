@@ -10,7 +10,8 @@
                                    frame.x2 + ", " +
                                    frame.y2 + ", " +
                                    frame.xOrY + ", " +
-                                   frame.colours;
+                                   frame.foregroundColours + ", " +
+                                   frame.backgroundColours;
                 document.body.appendChild(newDiv);
             }
 
@@ -28,7 +29,8 @@
                                  x2: 0,
                                  y2: 0,
                                  xOrY: "x",
-                                 colours: ["#FF0000", "#00FF00", "#0000FF", "#FFF0F0"]});
+                                 foregroundColours: ["#FF0000", "#00FF00", "#0000FF", "#FFF0F0"],
+                                 backgroundColours: ["#00FF00", "#0000FF", "#FF0000", "#FFF0F0"]});
             }
 
             function draw(frame){
@@ -36,7 +38,8 @@
             }
 
             function nextFrame(frame){
-                frame.colours.push(frame.colours.shift()); // rotate the colours
+                frame.foregroundColours.push(frame.foregroundColours.shift()); // rotate the colours
+                frame.backgroundColours.push(frame.backgroundColours.shift()); // rotate the colours
                 frame.x1 = frame.x2;
                 frame.y1 = frame.y2;
 
@@ -53,11 +56,11 @@
             function drawFrame(frame){
                 var canvas1 = document.getElementById("canvas1");
                 var context1 = canvas1.getContext("2d");
-                context1.fillStyle = "#FFFFFF";
+                context1.fillStyle = frame.backgroundColours[0];
                 context1.fillRect(0, 0, 400, 400);
                 context1.fill();
                 context1.beginPath();
-                context1.strokeStyle = frame.colours[0];
+                context1.strokeStyle = frame.foregroundColours[0];
                 context1.moveTo(frame.x1, frame.y1);
                 context1.lineTo(frame.x2, frame.y2);
                 context1.stroke();
