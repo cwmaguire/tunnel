@@ -57,7 +57,7 @@
                 frame.foregroundColours.push(frame.foregroundColours.shift()); // rotate the colours
                 frame.backgroundColours.push(frame.backgroundColours.shift()); // rotate the colours
 
-                var movedTunnels = moveTunnels(frame.tunnels, 10, 10, []);
+                var movedTunnels = moveTunnels(frame.tunnels, 20, 20, []);
 
                 frame.tunnels = movedTunnels;
 
@@ -65,10 +65,7 @@
             }
 
             function moveTunnels(tunnels, x, y, movedTunnels){
-
-
                 if(tunnels.length == 0){
-
                   return movedTunnels;
                 }
                 var tunnel = tunnels[0];
@@ -132,7 +129,7 @@
             }
 
             function topLeftCorner(tunnelOne, tunnelTwo){
-                if(tunnelOne.x < tunnelTwo.x && tunnelOne.y < tunnelTwo.y){
+                if(tunnelOne.x > tunnelTwo.x && tunnelOne.y > tunnelTwo.y){
                     return {x1: tunnelOne.x,
                             y1: tunnelOne.y,
                             x2: tunnelTwo.x,
@@ -144,7 +141,7 @@
 
             function topRightCorner(tunnelOne, tunnelTwo){
                 if(tunnelOne.x + tunnelOne.w < tunnelTwo.x + tunnelTwo.w &&
-                   tunnelOne.y < tunnelTwo.y){
+                   tunnelOne.y > tunnelTwo.y){
                     return {x1: tunnelOne.x + tunnelOne.w,
                             y1: tunnelOne.y,
                             x2: tunnelTwo.x + tunnelTwo.w,
@@ -155,7 +152,7 @@
             }
 
             function bottomLeftCorner(tunnelOne, tunnelTwo){
-                if(tunnelOne.x < tunnelTwo.x &&
+                if(tunnelOne.x > tunnelTwo.x &&
                    tunnelOne.y + tunnelOne.h < tunnelTwo.y + tunnelTwo.h){
                     return {x1: tunnelOne.x,
                             y1: tunnelOne.y + tunnelOne.h,
