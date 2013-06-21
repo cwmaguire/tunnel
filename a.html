@@ -3,6 +3,24 @@
 
     <head>
         <script language="JavaScript">
+            function makeTunnel(x, y, w, h){
+                return {'x': x,
+                        'y': y,
+                        'w': w,
+                        'h': h}
+            }
+
+            function moveTunnel(tunnelToMove, x, y, w, h){
+                movedTunnel = makeTunnel(tunnelToMove.x - x,
+                                         tunnelToMove.y - y,
+                                         tunnelToMove.w + w,
+                                         tunnelToMove.h + h);
+                if(movedTunnel.w > 400 && movedTunnel.y > 400){
+                  return makeTunnel(10, 10, 10, 10);
+                }
+                return movedTunnel;
+            }
+
             function logFrame(frame){
                 var newDiv = document.createElement("div");
                 newDiv.innerText = frame.x1 + ", " +
@@ -24,11 +42,7 @@
             }
 
             function onLoad(){
-                chain(40, draw, {x1: 20,
-                                 y1: 20,
-                                 x2: 0,
-                                 y2: 0,
-                                 xOrY: "x",
+                chain(40, draw, {tunnels: [makeTunnel(10, 10, 10, 10)],
                                  foregroundColours: ["#FF0000", "#00FF00", "#0000FF", "#FFF0F0"],
                                  backgroundColours: ["#879090", "#879090", "#909090", "#909090", "#879090", "#879090", "#909090", "#909090"],
                                  rectangleMargins: [10, 90],
@@ -42,26 +56,53 @@
             function nextFrame(frame){
                 frame.foregroundColours.push(frame.foregroundColours.shift()); // rotate the colours
                 frame.backgroundColours.push(frame.backgroundColours.shift()); // rotate the colours
-                frame.x1 = frame.x2;
-                frame.y1 = frame.y2;
 
-                frame.rectangleMargins[0] = (frame.rectangleMargins[0] + frame.rectangleMarginDelta) % 190
-                frame.rectangleMargins[1] = (frame.rectangleMargins[1] + frame.rectangleMarginDelta) % 190
+                movedTunnels = moveTunnels(frame.tunnels, 10, 10, []);
 
-                if(frame.xOrY == "x"){
-                    frame.x2 = frame.x1 + 20;
-                    frame.xOrY = "y";
-                }else{
-                    frame.y2 = frame.y1 + 20;
-                    frame.xOrY = "x";
-                }
+
+            var newDiv = document.createElement("div");
+            newDiv.innerText = "movedTunnels.length = " + movedTunnels.length;
+            document.body.appendChild(newDiv);
+
+                frame.tunnels = movedTunnels;
+
+            var newDiv = document.createElement("div");
+            newDiv.innerText = "frame.tunnels.length = " + frame.tunnels.length;
+            document.body.appendChild(newDiv);
+
                 return frame;
             }
 
-            function drawFrame(frame){
-                var rect1Margin = frame.rectangleMargins[0];
-                var rect2Margin = frame.rectangleMargins[1];
+            function moveTunnels(tunnels, x, y, movedTunnels){
 
+
+                if(tunnels.length == 0){
+
+            var newDiv = document.createElement("div");
+            newDiv.innerText = "tunnels.length == 0, movedTunnels.length = " + movedTunnels.length;
+            document.body.appendChild(newDiv);
+                  return movedTunnels;
+                }
+                tunnel = tunnels[0];
+            var newDiv = document.createElement("div");
+            newDiv.innerText = tunnel.x + ", " + tunnel.y + ", " + tunnel.w + ", " + tunnel.h;
+            document.body.appendChild(newDiv);
+                restOfTunnels = tunnels.slice(1);
+            var newDiv = document.createElement("div");
+            newDiv.innerText = "restOfTunnels.length = " + restOfTunnels.length;
+            document.body.appendChild(newDiv);
+                newMovedTunnels = movedTunnels.slice(0); // copy array
+                newMovedTunnels.push(moveTunnel(tunnel, x, y, 0, 0));
+
+
+            var newDiv = document.createElement("div");
+            newDiv.innerText = newMovedTunnels.length;
+            document.body.appendChild(newDiv);
+
+                moveTunnels(restOfTunnels, x, y, newMovedTunnels);
+            }
+
+            function drawFrame(frame){
                 var canvas1 = document.getElementById("canvas1");
                 var context1 = canvas1.getContext("2d");
                 context1.fillStyle = frame.backgroundColours[0];
@@ -70,23 +111,113 @@
 
                 context1.strokeStyle = frame.foregroundColours[0];
 
-                context1.strokeRect(200 - rect1Margin,
-                                    200 - rect1Margin,
-                                    2 * rect1Margin,
-                                    2 * rect1Margin);
-                context1.strokeRect(200 - rect2Margin,
-                                    200 - rect2Margin,
-                                    2 * rect2Margin,
-                                    2 * rect2Margin);
+                var newDiv = document.createElement("div");
+                newDiv.innerText = frame.tunnels;
+                document.body.appendChild(newDiv);
 
-                context1.beginPath();
-                context1.moveTo(200 - rect1Margin, 200 - rect1Margin);
-                context1.lineTo(200 - rect2Margin, 200 - rect2Margin);
-                context1.moveTo(200 - rect1Margin, 200 + rect1Margin);
-                context1.lineTo(200 - rect2Margin, 200 + rect2Margin);
-                context1.stroke();
-                context1.closePath();
+                drawTunnels(frame.tunnels, context1);
+
                 return frame;
+            }
+
+            function drawTunnels(tunnels, context){
+                if(tunnels.length == 0){
+                  return;
+                }
+
+                firstTunnel = tunnels[0]
+
+                context.strokeRect(firstTunnel.x,
+                                    firstTunnel.y,
+                                    firstTunnel.w,
+                                    firstTunnel.h);
+
+                drawTunnels(tunnels.slice(1), firstTunnel, context);
+            }
+
+            function drawTunnels(tunnels, previousTunnel, context){
+                if(tunnels.length == 0){
+                    return;
+                }
+
+                currentTunnel = tunnels[0];
+                context.strokeRect(currentTunnel.x,
+                                   currentTunnel.y,
+                                   currentTunnel.w,
+                                   currentTunnel.h);
+
+                drawTunnelCorners(tunnelCorners(previousTunnel, currentTunnel), context);
+
+                drawTunnels(tunnels.slice(1), currentTunnel, context);
+            }
+
+            function tunnelCorners(tunnelOne, tunnelTwo){
+                [topLeftCorner(tunnelOne, tunnelTwo),
+                 topRightCorner(tunnelOne, tunnelTwo),
+                 bottomLeftCorner(tunnelOne, tunnelTwo),
+                 bottomRightCorner(tunnelOne, tunnelTwo)]
+            }
+
+            function topLeftCorner(tunnelOne, tunnelTwo){
+                if(tunnelOne.x < tunnelTwo.x && tunnelOne.y < tunnelTwo.y){
+                    return {x1: tunnelOne.x,
+                            y1: tunnelOne.y,
+                            x2: tunnelTwo.x,
+                            y2: tunnelTwo.y};
+                }else{
+                    return null;
+                }
+            }
+
+            function topRightCorner(tunnelOne, tunnelTwo){
+                if(tunnelOne.x + tunnelOne.w < tunnelTwo.x + tunnelTwo.w &&
+                   tunnelOne.y < tunnelTwo.y){
+                    return {x1: tunnelOne.x + tunnelOne.w,
+                            y1: tunnelOne.y,
+                            x2: tunnelTwo.x + tunnelTwo.w,
+                            y2: tunnelTwo.y};
+                }else{
+                    return null;
+                }
+            }
+
+            function bottomLeftCorner(tunnelOne, tunnelTwo){
+                if(tunnelOne.x < tunnelTwo.x &&
+                   tunnelOne.y + tunnelOne.h < tunnelTwo.y + tunnelTwo.h){
+                    return {x1: tunnelOne.x,
+                            y1: tunnelOne.y + tunnelOne.h,
+                            x2: tunnelTwo.x,
+                            y2: tunnelTwo.y + tunnelTwo.h};
+                }else{
+                    return null;
+                }
+            }
+
+            function bottomLeftCorner(tunnelOne, tunnelTwo){
+                if(tunnelOne.x + tunnelOne.w < tunnelTwo.x + tunnelTwo.w &&
+                   tunnelOne.y + tunnelOne.h < tunnelTwo.y + tunnelTwo.h){
+                    return {x1: tunnelOne.x + tunnelOne.w,
+                            y1: tunnelOne.y + tunnelOne.h,
+                            x2: tunnelTwo.x + tunnelTwo.w,
+                            y2: tunnelTwo.y + tunnelTwo.h};
+                }else{
+                    return null;
+                }
+            }
+
+            function drawTunnelCorners(tunnelCorners, context){
+                if(tunnelCorners.length == 0){
+                    return;
+                }
+                tunnelCorner = tunnelCorners[0];
+                if(tunnelCorner != null){
+                    context.beginPath();
+                    context.moveTo(tunnelCorner.x1, tunnelCorner.y1);
+                    context.lineTo(tunnelCorner.x2, tunnelCorner.y2);
+                    context.stroke();
+                    context.closePath();
+                }
+                drawTunnelCorners(tunnelCorners.slice(0), context);
             }
         </script>
     </head>
