@@ -88,10 +88,6 @@
 
                 context1.strokeStyle = frame.foregroundColours[0];
 
-                var newDiv = document.createElement("div");
-                newDiv.innerText = frame.tunnels;
-                document.body.appendChild(newDiv);
-
                 drawTunnels(frame.tunnels, context1);
 
                 return frame;
@@ -118,10 +114,10 @@
                 }
 
                 currentTunnel = tunnels[0];
-            ctx.strokeRect(currentTunnel.x,
-                                   currentTunnel.y,
-                                   currentTunnel.w,
-                                   currentTunnel.h);
+                ctx.strokeRect(currentTunnel.x,
+                               currentTunnel.y,
+                               currentTunnel.w,
+                               currentTunnel.h);
 
                 drawTunnelCorners(tunnelCorners(previousTunnel, currentTunnel), ctx);
 
@@ -129,10 +125,10 @@
             }
 
             function tunnelCorners(tunnelOne, tunnelTwo){
-                [topLeftCorner(tunnelOne, tunnelTwo),
-                 topRightCorner(tunnelOne, tunnelTwo),
-                 bottomLeftCorner(tunnelOne, tunnelTwo),
-                 bottomRightCorner(tunnelOne, tunnelTwo)]
+                return [topLeftCorner(tunnelOne, tunnelTwo),
+                        topRightCorner(tunnelOne, tunnelTwo),
+                        bottomLeftCorner(tunnelOne, tunnelTwo),
+                        bottomRightCorner(tunnelOne, tunnelTwo)]
             }
 
             function topLeftCorner(tunnelOne, tunnelTwo){
@@ -170,7 +166,7 @@
                 }
             }
 
-            function bottomLeftCorner(tunnelOne, tunnelTwo){
+            function bottomRightCorner(tunnelOne, tunnelTwo){
                 if(tunnelOne.x + tunnelOne.w < tunnelTwo.x + tunnelTwo.w &&
                    tunnelOne.y + tunnelOne.h < tunnelTwo.y + tunnelTwo.h){
                     return {x1: tunnelOne.x + tunnelOne.w,
@@ -183,6 +179,11 @@
             }
 
             function drawTunnelCorners(tunnelCorners, ctx){
+
+            var newDiv = document.createElement("div");
+            newDiv.innerText = "tunnel corners: " + tunnelCorners;
+            document.body.appendChild(newDiv);
+
                 if(tunnelCorners.length == 0){
                     return;
                 }
@@ -194,7 +195,7 @@
             ctx.stroke();
             ctx.closePath();
                 }
-                drawTunnelCorners(tunnelCorners.slice(0), ctx);
+                drawTunnelCorners(tunnelCorners.slice(1), ctx);
             }
         </script>
     </head>
