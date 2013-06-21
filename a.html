@@ -11,7 +11,7 @@
             }
 
             function moveTunnel(tunnelToMove, x, y, w, h){
-                movedTunnel = makeTunnel(tunnelToMove.x - x,
+                var movedTunnel = makeTunnel(tunnelToMove.x - x,
                                          tunnelToMove.y - y,
                                          tunnelToMove.w + w,
                                          tunnelToMove.h + h);
@@ -42,7 +42,7 @@
             }
 
             function onLoad(){
-                chain(40, draw, {tunnels: [makeTunnel(10, 10, 10, 10)],
+                chain(40, draw, {tunnels: [makeTunnel(190, 190, 20, 20)],
                                  foregroundColours: ["#FF0000", "#00FF00", "#0000FF", "#FFF0F0"],
                                  backgroundColours: ["#879090", "#879090", "#909090", "#909090", "#879090", "#879090", "#909090", "#909090"],
                                  rectangleMargins: [10, 90],
@@ -57,18 +57,9 @@
                 frame.foregroundColours.push(frame.foregroundColours.shift()); // rotate the colours
                 frame.backgroundColours.push(frame.backgroundColours.shift()); // rotate the colours
 
-                movedTunnels = moveTunnels(frame.tunnels, 10, 10, []);
-
-
-            var newDiv = document.createElement("div");
-            newDiv.innerText = "movedTunnels.length = " + movedTunnels.length;
-            document.body.appendChild(newDiv);
+                var movedTunnels = moveTunnels(frame.tunnels, 10, 10, []);
 
                 frame.tunnels = movedTunnels;
-
-            var newDiv = document.createElement("div");
-            newDiv.innerText = "frame.tunnels.length = " + frame.tunnels.length;
-            document.body.appendChild(newDiv);
 
                 return frame;
             }
@@ -78,28 +69,14 @@
 
                 if(tunnels.length == 0){
 
-            var newDiv = document.createElement("div");
-            newDiv.innerText = "tunnels.length == 0, movedTunnels.length = " + movedTunnels.length;
-            document.body.appendChild(newDiv);
                   return movedTunnels;
                 }
-                tunnel = tunnels[0];
-            var newDiv = document.createElement("div");
-            newDiv.innerText = tunnel.x + ", " + tunnel.y + ", " + tunnel.w + ", " + tunnel.h;
-            document.body.appendChild(newDiv);
-                restOfTunnels = tunnels.slice(1);
-            var newDiv = document.createElement("div");
-            newDiv.innerText = "restOfTunnels.length = " + restOfTunnels.length;
-            document.body.appendChild(newDiv);
-                newMovedTunnels = movedTunnels.slice(0); // copy array
-                newMovedTunnels.push(moveTunnel(tunnel, x, y, 0, 0));
+                var tunnel = tunnels[0];
+                var restOfTunnels = tunnels.slice(1);
+                var newMovedTunnels = movedTunnels.slice(0); // copy array
+                newMovedTunnels.push(moveTunnel(tunnel, x, y, x * 2, y * 2));
 
-
-            var newDiv = document.createElement("div");
-            newDiv.innerText = newMovedTunnels.length;
-            document.body.appendChild(newDiv);
-
-                moveTunnels(restOfTunnels, x, y, newMovedTunnels);
+                return moveTunnels(restOfTunnels, x, y, newMovedTunnels);
             }
 
             function drawFrame(frame){
@@ -120,35 +97,35 @@
                 return frame;
             }
 
-            function drawTunnels(tunnels, context){
+            function drawTunnels(tunnels, ctx){
                 if(tunnels.length == 0){
                   return;
                 }
 
                 firstTunnel = tunnels[0]
 
-                context.strokeRect(firstTunnel.x,
+            ctx.strokeRect(firstTunnel.x,
                                     firstTunnel.y,
                                     firstTunnel.w,
                                     firstTunnel.h);
 
-                drawTunnels(tunnels.slice(1), firstTunnel, context);
+                drawTunnelsRest(tunnels.slice(1), firstTunnel, ctx);
             }
 
-            function drawTunnels(tunnels, previousTunnel, context){
+            function drawTunnelsRest(tunnels, previousTunnel, ctx){
                 if(tunnels.length == 0){
                     return;
                 }
 
                 currentTunnel = tunnels[0];
-                context.strokeRect(currentTunnel.x,
+            ctx.strokeRect(currentTunnel.x,
                                    currentTunnel.y,
                                    currentTunnel.w,
                                    currentTunnel.h);
 
-                drawTunnelCorners(tunnelCorners(previousTunnel, currentTunnel), context);
+                drawTunnelCorners(tunnelCorners(previousTunnel, currentTunnel), ctx);
 
-                drawTunnels(tunnels.slice(1), currentTunnel, context);
+                drawTunnels(tunnels.slice(1), currentTunnel, ctx);
             }
 
             function tunnelCorners(tunnelOne, tunnelTwo){
@@ -205,19 +182,19 @@
                 }
             }
 
-            function drawTunnelCorners(tunnelCorners, context){
+            function drawTunnelCorners(tunnelCorners, ctx){
                 if(tunnelCorners.length == 0){
                     return;
                 }
                 tunnelCorner = tunnelCorners[0];
                 if(tunnelCorner != null){
-                    context.beginPath();
-                    context.moveTo(tunnelCorner.x1, tunnelCorner.y1);
-                    context.lineTo(tunnelCorner.x2, tunnelCorner.y2);
-                    context.stroke();
-                    context.closePath();
+            ctx.beginPath();
+            ctx.moveTo(tunnelCorner.x1, tunnelCorner.y1);
+            ctx.lineTo(tunnelCorner.x2, tunnelCorner.y2);
+            ctx.stroke();
+            ctx.closePath();
                 }
-                drawTunnelCorners(tunnelCorners.slice(0), context);
+                drawTunnelCorners(tunnelCorners.slice(0), ctx);
             }
         </script>
     </head>
