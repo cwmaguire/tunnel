@@ -44,7 +44,7 @@
             }
 
             function onLoad(){
-                chain(40, draw, {tunnels: [makeTunnel(190, 190, 20, 20), makeTunnel(180, 180, 40, 40)],
+                chain(40, draw, {tunnels: [makeTunnel(190, 190, 20, 20), makeTunnel(140, 140, 120, 120)],
                                  foregroundColours: ["#FF0000", "#00FF00", "#0000FF", "#FFF0F0"],
                                  backgroundColours: ["#879090", "#879090", "#909090", "#909090", "#879090", "#879090", "#909090", "#909090"],
                                  rectangleMargins: [10, 90],
@@ -59,7 +59,7 @@
                 frame.foregroundColours.push(frame.foregroundColours.shift()); // rotate the colours
                 frame.backgroundColours.push(frame.backgroundColours.shift()); // rotate the colours
 
-                var movedTunnels = moveTunnels(frame.tunnels, 20, 20, []);
+                var movedTunnels = moveTunnels(frame.tunnels, 30, 30, []);
 
                 frame.tunnels = movedTunnels;
 
