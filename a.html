@@ -16,7 +16,9 @@
                                          tunnelToMove.w + w,
                                          tunnelToMove.h + h);
                 if(movedTunnel.w > 400 && movedTunnel.h > 400){
-                  return makeTunnel(190, 190, 20, 20);
+                    var extraX = movedTunnel.w % 400;
+                    var extraY = movedTunnel.h % 400;
+                  return makeTunnel(190 - extraX, 190 - extraY, 20 + (extraX * 2), 20 + (extraY * 2));
                 }
                 return movedTunnel;
             }
@@ -95,12 +97,12 @@
                   return;
                 }
 
-                firstTunnel = tunnels[0]
+                var firstTunnel = tunnels[0]
 
-            ctx.strokeRect(firstTunnel.x,
-                                    firstTunnel.y,
-                                    firstTunnel.w,
-                                    firstTunnel.h);
+                ctx.strokeRect(firstTunnel.x,
+                               firstTunnel.y,
+                               firstTunnel.w,
+                               firstTunnel.h);
 
                 drawTunnelsRest(tunnels.slice(1), firstTunnel, ctx);
             }
@@ -110,7 +112,7 @@
                     return;
                 }
 
-                currentTunnel = tunnels[0];
+                var currentTunnel = tunnels[0];
                 ctx.strokeRect(currentTunnel.x,
                                currentTunnel.y,
                                currentTunnel.w,
@@ -176,21 +178,16 @@
             }
 
             function drawTunnelCorners(tunnelCorners, ctx){
-
-            var newDiv = document.createElement("div");
-            newDiv.innerText = "tunnel corners: " + tunnelCorners;
-            document.body.appendChild(newDiv);
-
                 if(tunnelCorners.length == 0){
                     return;
                 }
                 tunnelCorner = tunnelCorners[0];
                 if(tunnelCorner != null){
-            ctx.beginPath();
-            ctx.moveTo(tunnelCorner.x1, tunnelCorner.y1);
-            ctx.lineTo(tunnelCorner.x2, tunnelCorner.y2);
-            ctx.stroke();
-            ctx.closePath();
+                    ctx.beginPath();
+                    ctx.moveTo(tunnelCorner.x1, tunnelCorner.y1);
+                    ctx.lineTo(tunnelCorner.x2, tunnelCorner.y2);
+                    ctx.stroke();
+                    ctx.closePath();
                 }
                 drawTunnelCorners(tunnelCorners.slice(1), ctx);
             }
