@@ -36,7 +36,7 @@
             }
 
             function chain(times, fn, object){
-                logFrame(object);
+                //logFrame(object);
 
                 if(times > 0){
                     window.setTimeout(function(){chain(times - 1, fn, fn.call(null, object))}, 100);
@@ -59,7 +59,7 @@
                 frame.foregroundColours.push(frame.foregroundColours.shift()); // rotate the colours
                 frame.backgroundColours.push(frame.backgroundColours.shift()); // rotate the colours
 
-                var movedTunnels = moveTunnels(frame.tunnels, 30, 30, []);
+                var movedTunnels = moveTunnels(frame.tunnels, 25, 25, []);
 
                 frame.tunnels = movedTunnels;
 
@@ -109,6 +109,7 @@
 
             function drawTunnelsRest(tunnels, previousTunnel, ctx){
                 if(tunnels.length == 0){
+                    drawTunnelCorners(tunnelCorners(previousTunnel, makeTunnel(1,1,398,398)), ctx);
                     return;
                 }
 
