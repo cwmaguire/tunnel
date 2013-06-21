@@ -15,8 +15,8 @@
                                          tunnelToMove.y - y,
                                          tunnelToMove.w + w,
                                          tunnelToMove.h + h);
-                if(movedTunnel.w > 400 && movedTunnel.y > 400){
-                  return makeTunnel(10, 10, 10, 10);
+                if(movedTunnel.w > 400 && movedTunnel.h > 400){
+                  return makeTunnel(190, 190, 20, 20);
                 }
                 return movedTunnel;
             }
@@ -42,7 +42,7 @@
             }
 
             function onLoad(){
-                chain(40, draw, {tunnels: [makeTunnel(190, 190, 20, 20)],
+                chain(40, draw, {tunnels: [makeTunnel(190, 190, 20, 20), makeTunnel(180, 180, 40, 40)],
                                  foregroundColours: ["#FF0000", "#00FF00", "#0000FF", "#FFF0F0"],
                                  backgroundColours: ["#879090", "#879090", "#909090", "#909090", "#879090", "#879090", "#909090", "#909090"],
                                  rectangleMargins: [10, 90],
